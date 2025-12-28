@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+// Simple theme initialization that runs immediately
+(function() {
+    console.log('Theme initialization starting...');
+    
+    // 1. Apply saved theme immediately (before DOM is fully loaded)
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    console.log('Immediate theme applied:', savedTheme);
+    
+    // 2. Wait for DOM, then initialize the toggle button
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, setting up theme toggle...');
+        
+        if (window.sharedData && window.sharedData.initThemeToggle) {
+            try {
+                window.sharedData.initThemeToggle();
+                console.log('Theme toggle initialized via shared.js');
+            } catch (error) {
+                console.error('Error in shared.js theme toggle:', error);
+                initFallbackTheme();
+            }
+        } else {
+            console.warn('shared.js not loaded, using fallback theme');
+            initFallbackTheme();
+        }
+    });
+    
+    // Fallback theme function
+    function initFallbackTheme() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (!themeToggle) {
+            console.error('Theme toggle button not found for fallback');
+            return;
+        }
+        
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        
+        // Set icon
+        const icon = themeToggle.querySelector('i');
+        if (savedTheme === 'light') {
+            icon.className = 'fas fa-moon';
+        } else {
+            icon.className = 'fas fa-sun';
+        }
+        
+        // Add click event
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = html.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = this.querySelector('i');
+            if (newTheme === 'light') {
+                icon.className = 'fas fa-moon';
+            } else {
+                icon.className = 'fas fa-sun';
+            }
+            
+            console.log('Fallback theme changed to:', newTheme);
+        });
+        
+        console.log('Fallback theme initialized');
+    }
+})();
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My E-Library</title>
+    <style>
+        /* Basic Styling (You should move this to a style.css file) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .header {
+            background-color: #4CAF50; /* Library green */
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+
+        .search-bar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .book-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .book-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        .book-card h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+
+        .book-card p {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .read-btn {
+            display: inline-block;
+            background-color: #555;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>📚 My Digital Library</h1>
+        <p>Your portal to endless knowledge and stories.</p>
+    </header>
+
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search by title, author, or genre...">
+            <button onclick="searchBooks()">Search</button>
+        </div>
+
+        <h2>Featured Books</h2>
+
+        <div class="book-grid" id="bookGrid">
+            
+            <div class="book-card">
+                <img src="https://via.placeholder.com/250x350/888888/FFFFFF?text=Book+Cover+1" alt="Book 1 Cover">
+                <h3>The Great Novel</h3>
+                <p>Author: Jane Doe</p>
+                <p>Genre: Fiction</p>
+                <a href="#" class="read-btn">Read Now</a>
+            </div>
+
+            <div class="book-card">
+                <img src="https://via.placeholder.com/250x350/505050/FFFFFF?text=Book+Cover+2" alt="Book 2 Cover">
+                <h3>Code Mastery</h3>
+                <p>Author: John Smith</p>
+                <p>Genre: Programming</p>
+                <a href="#" class="read-btn">Read Now</a>
+            </div>
+
+            <div class="book-card">
+                <img src="https://via.placeholder.com/250x350/AAAAAA/FFFFFF?text=Book+Cover+3" alt="Book 3 Cover">
+                <h3>History of the World</h3>
+                <p>Author: Alex King</p>
+                <p>Genre: History</p>
+                <a href="#" class="read-btn">Read Now</a>
+            </div>
+
+            </div>
+    </div>
+
+    <script>
+        function searchBooks() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.book-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(input)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            alert("Search executed! Filtered books based on '" + input + "'");
+        }
+    </script>
+
+</body>
+</html>

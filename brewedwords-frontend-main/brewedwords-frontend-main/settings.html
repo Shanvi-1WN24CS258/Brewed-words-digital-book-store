@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings | Brewed Words</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .settings-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .settings-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .settings-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-section h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--gray);
+            border-radius: 5px;
+            background: var(--light);
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .form-group input:read-only {
+            background: var(--card-bg);
+            color: var(--gray);
+        }
+        
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .save-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .logout-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--danger);
+        }
+        
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .success-message {
+            background: var(--success);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .error-message {
+            background: var(--danger);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (same as other pages) -->
+    <header>
+        <div class="logo">
+            <a href="index.html" style="color: white; text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-book-open"></i>
+                <span>Brewed Words</span>
+            </a>
+        </div>
+        
+        <div class="nav-tabs">
+            <a href="index.html">Home</a>
+            <a href="mylibrary.html">My Library</a>
+            <a href="favorites.html">Favorites</a>
+            <a href="explore.html">Explore</a>
+            <a href="settings.html" id="settingsBtn" style="display: none;">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </div>
+        
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
+
+    <!-- Settings Content -->
+    <main class="settings-container">
+        <div class="settings-header">
+            <h1 class="section-title">Account Settings</h1>
+            <p>Manage your account information and preferences</p>
+        </div>
+        
+        <div id="settingsContent" class="settings-card">
+            <!-- Content loaded by JavaScript -->
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading settings...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 Brewed Words Online Library. All rights reserved.</p>
+        <p>A Web Technology Project</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="shared.js"></script>
+    <script src="settings.js"></script>
+</body>
+</html>

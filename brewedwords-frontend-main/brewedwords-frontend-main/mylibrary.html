@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <script>
+// Simple theme initialization that runs immediately
+(function() {
+    console.log('Theme initialization starting...');
+    
+    // 1. Apply saved theme immediately (before DOM is fully loaded)
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    console.log('Immediate theme applied:', savedTheme);
+    
+    // 2. Wait for DOM, then initialize the toggle button
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, setting up theme toggle...');
+        
+        if (window.sharedData && window.sharedData.initThemeToggle) {
+            try {
+                window.sharedData.initThemeToggle();
+                console.log('Theme toggle initialized via shared.js');
+            } catch (error) {
+                console.error('Error in shared.js theme toggle:', error);
+                initFallbackTheme();
+            }
+        } else {
+            console.warn('shared.js not loaded, using fallback theme');
+            initFallbackTheme();
+        }
+    });
+    
+    // Fallback theme function
+    function initFallbackTheme() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (!themeToggle) {
+            console.error('Theme toggle button not found for fallback');
+            return;
+        }
+        
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        
+        // Set icon
+        const icon = themeToggle.querySelector('i');
+        if (savedTheme === 'light') {
+            icon.className = 'fas fa-moon';
+        } else {
+            icon.className = 'fas fa-sun';
+        }
+        
+        // Add click event
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = html.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = this.querySelector('i');
+            if (newTheme === 'light') {
+                icon.className = 'fas fa-moon';
+            } else {
+                icon.className = 'fas fa-sun';
+            }
+            
+            console.log('Fallback theme changed to:', newTheme);
+        });
+        
+        console.log('Fallback theme initialized');
+    }
+})();
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library | Brewed Words</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .library-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .library-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .library-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .library-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .explore-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .explore-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .recently-added {
+            margin-top: 3rem;
+        }
+        
+        .book-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .book-card:hover .book-actions {
+            opacity: 1;
+        }
+        
+        .remove-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="index.html" style="color: white; text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-book-open"></i>
+                <span>Brewed Words</span>
+            </a>
+        </div>
+        
+        <div class="nav-tabs">
+            <a href="index.html">Home</a>
+            <a href="mylibrary.html" class="active">My Library</a>
+            <a href="favorites.html">Favorites</a>
+            <a href="explore.html">Explore</a>
+        </div>
+        
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
+
+    <main class="library-container">
+        <div class="library-header">
+            <h1 class="section-title">My Library</h1>
+            <p>Your personal collection of saved books</p>
+        </div>
+        
+        <div class="library-stats" id="libraryStats">
+            <!-- Stats will be loaded by JavaScript -->
+        </div>
+        
+        <div class="library-actions">
+            <button class="filter-btn active" data-filter="all">All Books</button>
+            <button class="filter-btn" data-filter="recent">Recently Added</button>
+            <button class="filter-btn" data-filter="reading">Currently Reading</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+        
+        <div id="libraryContent">
+            <!-- Content loaded by JavaScript -->
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-book"></i>
+                <h3>Your library is empty</h3>
+                <p>Add books to your library by clicking the bookmark icon on any book.</p>
+                <a href="explore.html" class="explore-link">Explore Books</a>
+            </div>
+            
+            <div class="books-grid" id="libraryGrid" style="display: none;">
+                <!-- Library books will appear here -->
+            </div>
+        </div>
+        
+        <div class="recently-added" id="recentlyAddedSection" style="display: none;">
+            <h2 class="section-title">Recently Added</h2>
+            <div class="books-grid" id="recentlyAddedGrid">
+                <!-- Recently added books -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Brewed Words Online Library. All rights reserved.</p>
+        <p>A Web Technology Project</p>
+    </footer>
+
+    <script src="shared.js"></script>
+    <script src="mylibrary.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users | Brewed Words Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container { max-width: 1400px; margin: 0 auto; padding: 2rem 1rem; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .empty-state { text-align: center; padding: 3rem; color: var(--gray); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="admin-dashboard.html" style="color: white; text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-users"></i>
+                <span>Manage Users</span>
+            </a>
+        </div>
+        <div class="nav-tabs">
+            <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="admin-books.html"><i class="fas fa-book"></i> Books</a>
+            <a href="admin-users.html" class="active"><i class="fas fa-users"></i> Users</a>
+            <a href="admin-settings.html"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-users"></i> User Management</h1>
+            <a href="admin-dashboard.html" class="admin-btn btn-secondary">Back to Dashboard</a>
+        </div>
+        
+        <div id="usersList">
+            <div class="empty-state">
+                <i class="fas fa-users-slash fa-3x"></i>
+                <h3>User Management</h3>
+                <p>For a complete project, this would show all registered users</p>
+                <p><small>In a full implementation, you'd see user list, activity, etc.</small></p>
+            </div>
+        </div>
+    </main>
+
+    <script src="shared.js"></script>
+    <script src="admin-management.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

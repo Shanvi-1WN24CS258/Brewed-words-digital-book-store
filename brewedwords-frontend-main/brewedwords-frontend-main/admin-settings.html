@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings | Brewed Words</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- In admin-settings.html -->
+<script src="shared.js"></script>
+<script src="admin-management.js"></script>  <!-- ADD THIS -->
+<script src="admin.js"></script>
+
+    <style>
+        .settings-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .settings-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .settings-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .strength-weak { color: var(--danger); }
+        .strength-medium { color: var(--warning); }
+        .strength-strong { color: var(--success); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="admin-dashboard.html" style="color: white; text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin Settings</span>
+            </a>
+        </div>
+        
+        <div class="nav-tabs">
+            <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="admin-books.html"><i class="fas fa-book"></i> Books</a>
+            <a href="admin-users.html"><i class="fas fa-users"></i> Users</a>
+            <a href="admin-settings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+        
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
+
+    <main class="settings-container">
+        <div class="settings-card">
+            <h1><i class="fas fa-user-cog"></i> Admin Settings</h1>
+            
+            <div class="settings-section">
+                <h2><i class="fas fa-key"></i> Change Password</h2>
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label for="oldPassword">Current Password</label>
+                        <input type="password" id="oldPassword" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" required 
+                               oninput="checkPasswordStrength(this.value)">
+                        <div class="password-strength" id="passwordStrength"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">
+                        <i class="fas fa-save"></i> Change Password
+                    </button>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <h2><i class="fas fa-info-circle"></i> Session Information</h2>
+                <div id="sessionInfo">
+                    Loading session info...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="shared.js"></script>
+    <script src="admin-management.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check admin access
+            if (!checkAdminAccess()) return;
+            
+            // Load session info
+            loadSessionInfo();
+            
+            // Password change form
+            document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const oldPassword = document.getElementById('oldPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (newPassword !== confirmPassword) {
+                    alert('New passwords do not match!');
+                    return;
+                }
+                
+                const currentAdmin = AdminManager.getCurrentAdmin();
+                const result = AdminManager.changePassword(
+                    currentAdmin.adminId, 
+                    oldPassword, 
+                    newPassword, 
+                    currentAdmin
+                );
+                
+                if (result.success) {
+                    alert('Password changed successfully!');
+                    this.reset();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            });
+            
+            // Initialize theme
+            if (window.sharedData && window.sharedData.initThemeToggle) {
+                window.sharedData.initThemeToggle();
+            }
+        });
+        
+        function loadSessionInfo() {
+            const session = AdminManager.getCurrentAdmin();
+            if (!session) return;
+            
+            const sessionInfo = document.getElementById('sessionInfo');
+            const loginTime = new Date(session.loginTime);
+            const expiryTime = new Date(session.expiry);
+            
+            sessionInfo.innerHTML = `
+                <p><strong>Logged in as:</strong> ${session.name}</p>
+                <p><strong>Email:</strong> ${session.email}</p>
+                <p><strong>Role:</strong> ${session.role}</p>
+                <p><strong>Login time:</strong> ${loginTime.toLocaleString()}</p>
+                <p><strong>Session expires:</strong> ${expiryTime.toLocaleString()}</p>
+            `;
+        }
+        
+        function checkPasswordStrength(password) {
+            const strengthElem = document.getElementById('passwordStrength');
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            if (strength === 0) {
+                strengthElem.innerHTML = '';
+                strengthElem.className = 'password-strength';
+            } else if (strength <= 2) {
+                strengthElem.textContent = 'Weak';
+                strengthElem.className = 'password-strength strength-weak';
+            } else if (strength === 3) {
+                strengthElem.textContent = 'Medium';
+                strengthElem.className = 'password-strength strength-medium';
+            } else {
+                strengthElem.textContent = 'Strong';
+                strengthElem.className = 'password-strength strength-strong';
+            }
+        }
+    </script>
+</body>
+</html>
